@@ -5,7 +5,7 @@ Contributions are welcome! Here's how to get started.
 ## Development Setup
 
 ```bash
-git clone https://github.com/lrs/ai-sdk-lmstudio.git
+git clone https://github.com/suchobits/ai-sdk-lmstudio.git
 cd ai-sdk-lmstudio
 pnpm install
 ```
