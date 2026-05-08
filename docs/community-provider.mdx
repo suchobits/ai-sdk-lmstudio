@@ -1,0 +1,110 @@
+---
+title: LM Studio
+description: Use local LLMs via LM Studio with the AI SDK.
+---
+
+# LM Studio Provider
+
+The [LM Studio](https://lmstudio.ai) provider for the [AI SDK](https://ai-sdk.dev) enables you to use locally-running LLMs with full AI SDK support including streaming, tool calling, structured output, and embeddings.
+
+## Setup
+
+### Install the provider
+
+<Tabs items={['pnpm', 'npm', 'yarn']}>
+  <Tab>
+    ```bash
+    pnpm add ai-sdk-lmstudio
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    npm install ai-sdk-lmstudio
+    ```
+  </Tab>
+  <Tab>
+    ```bash
+    yarn add ai-sdk-lmstudio
+    ```
+  </Tab>
+</Tabs>
+
+### Start LM Studio
+
+1. Download and install [LM Studio](https://lmstudio.ai)
+2. Load a model (e.g., `qwen2.5-coder-7b`)
+3. Start the local server (default: `http://localhost:1234`)
+
+## Provider Instance
+
+You can import the default `lmstudio` provider instance or create a custom one:
+
+```ts
+import { lmstudio } from 'ai-sdk-lmstudio';
+```
+
+To customize the base URL or headers:
+
+```ts
+import { createLmstudio } from 'ai-sdk-lmstudio';
+
+const lmstudio = createLmstudio({
+  baseURL: 'http://192.168.1.100:1234/v1',
+});
+```
+
+## Language Models
+
+Create a chat model by calling `lmstudio()` with the model ID matching what's loaded in LM Studio:
+
+```ts
+const model = lmstudio('qwen2.5-coder-7b');
+```
+
+### Example: Generate Text
+
+```ts
+import { lmstudio } from 'ai-sdk-lmstudio';
+import { generateText } from 'ai';
+
+const { text } = await generateText({
+  model: lmstudio('qwen2.5-coder-7b'),
+  prompt: 'Explain TypeScript generics.',
+});
+```
+
+### Example: Stream Text
+
+```ts
+import { lmstudio } from 'ai-sdk-lmstudio';
+import { streamText } from 'ai';
+
+const result = streamText({
+  model: lmstudio('qwen2.5-coder-7b'),
+  prompt: 'Write a haiku about local LLMs.',
+});
+
+for await (const chunk of result.textStream) {
+  process.stdout.write(chunk);
+}
+```
+
+## Embedding Models
+
+Create an embedding model for text embeddings:
+
+```ts
+import { lmstudio } from 'ai-sdk-lmstudio';
+import { embed } from 'ai';
+
+const { embedding } = await embed({
+  model: lmstudio.textEmbeddingModel('text-embedding-nomic-embed-text-v1.5'),
+  value: 'Hello world',
+});
+```
+
+## Resources
+
+- [GitHub Repository](https://github.com/lrs/ai-sdk-lmstudio)
+- [LM Studio Documentation](https://lmstudio.ai/docs)
+- [LM Studio API Reference](https://lmstudio.ai/docs/developer)
