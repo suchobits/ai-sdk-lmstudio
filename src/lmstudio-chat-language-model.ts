@@ -86,8 +86,13 @@ export class LmstudioChatLanguageModel implements LanguageModelV1 {
     const choice = response.choices[0];
     const { id, modelId, timestamp } = getResponseMetadata(response);
 
+    const reasoning = choice.message.reasoning_content
+      ? [{ type: 'text' as const, text: choice.message.reasoning_content }]
+      : undefined;
+
     return {
       text: choice.message.content ?? undefined,
+      reasoning,
       toolCalls: choice.message.tool_calls?.map((toolCall) => ({
         toolCallType: 'function' as const,
         toolCallId: toolCall.id,
@@ -156,6 +161,13 @@ export class LmstudioChatLanguageModel implements LanguageModelV1 {
             controller.enqueue({
               type: 'response-metadata',
               ...getResponseMetadata(chunk),
+            });
+          }
+
+          if (choice.delta?.reasoning_content) {
+            controller.enqueue({
+              type: 'reasoning',
+              textDelta: choice.delta.reasoning_content,
             });
           }
 
@@ -242,6 +254,7 @@ const lmstudioChatResponseSchema = z.object({
     z.object({
       message: z.object({
         content: z.string().nullable().optional(),
+        reasoning_content: z.string().nullable().optional(),
         tool_calls: z
           .array(
             z.object({
@@ -277,6 +290,7 @@ const lmstudioChatChunkSchema = z.object({
         delta: z
           .object({
             content: z.string().nullable().optional(),
+            reasoning_content: z.string().nullable().optional(),
             tool_calls: z
               .array(
                 z.object({
