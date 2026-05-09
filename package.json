@@ -40,7 +40,7 @@
     "@changesets/changelog-github": "^0.7.0",
     "@changesets/cli": "^2.31.0",
     "@types/node": "^22.0.0",
-    "ai": "^6.0.176",
+    "ai": "^6.0.177",
     "tsup": "^8.0.0",
     "typescript": "^5.7.0",
     "vitest": "^3.0.0",
