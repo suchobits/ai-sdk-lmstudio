@@ -1,9 +1,9 @@
 import type {
-	LanguageModelV2,
-	LanguageModelV2CallOptions,
-	LanguageModelV2CallWarning,
-	LanguageModelV2Content,
-	LanguageModelV2StreamPart,
+	LanguageModelV3,
+	LanguageModelV3CallOptions,
+	LanguageModelV3Content,
+	LanguageModelV3StreamPart,
+	SharedV3Warning,
 } from '@ai-sdk/provider';
 import type { ParseResult } from '@ai-sdk/provider-utils';
 import {
@@ -24,8 +24,8 @@ import { prepareTools } from './lmstudio-prepare-tools.js';
 import { mapLmstudioFinishReason } from './map-lmstudio-finish-reason.js';
 import { mapLmstudioUsage } from './map-lmstudio-usage.js';
 
-export class LmstudioChatLanguageModel implements LanguageModelV2 {
-	readonly specificationVersion = 'v2' as const;
+export class LmstudioChatLanguageModel implements LanguageModelV3 {
+	readonly specificationVersion = 'v3' as const;
 	readonly provider: string;
 	readonly modelId: string;
 	readonly supportedUrls: Record<string, RegExp[]> = {};
@@ -39,7 +39,7 @@ export class LmstudioChatLanguageModel implements LanguageModelV2 {
 		this.modelId = modelId;
 	}
 
-	private getArgs(options: LanguageModelV2CallOptions) {
+	private getArgs(options: LanguageModelV3CallOptions) {
 		const { messages, warnings: messageWarnings } =
 			convertToLmstudioChatMessages(options.prompt);
 		const {
@@ -48,10 +48,7 @@ export class LmstudioChatLanguageModel implements LanguageModelV2 {
 			warnings: toolWarnings,
 		} = prepareTools(options.tools, options.toolChoice);
 
-		const warnings: LanguageModelV2CallWarning[] = [
-			...messageWarnings,
-			...toolWarnings,
-		];
+		const warnings: SharedV3Warning[] = [...messageWarnings, ...toolWarnings];
 
 		const responseFormat = options.responseFormat;
 		const body = {
@@ -78,7 +75,7 @@ export class LmstudioChatLanguageModel implements LanguageModelV2 {
 		return { body, warnings };
 	}
 
-	async doGenerate(options: LanguageModelV2CallOptions) {
+	async doGenerate(options: LanguageModelV3CallOptions) {
 		const { body, warnings } = this.getArgs(options);
 
 		const { value: response, responseHeaders } = await postJsonToApi({
@@ -96,7 +93,7 @@ export class LmstudioChatLanguageModel implements LanguageModelV2 {
 		const choice = response.choices[0];
 		const metadata = getResponseMetadata(response);
 
-		const content: LanguageModelV2Content[] = [];
+		const content: LanguageModelV3Content[] = [];
 
 		if (choice.message.reasoning_content) {
 			content.push({
@@ -137,7 +134,7 @@ export class LmstudioChatLanguageModel implements LanguageModelV2 {
 		};
 	}
 
-	async doStream(options: LanguageModelV2CallOptions) {
+	async doStream(options: LanguageModelV3CallOptions) {
 		const { body, warnings } = this.getArgs(options);
 
 		const { value: response, responseHeaders } = await postJsonToApi({
@@ -156,7 +153,10 @@ export class LmstudioChatLanguageModel implements LanguageModelV2 {
 			fetch: this.config.fetch,
 		});
 
-		let finishReason: ReturnType<typeof mapLmstudioFinishReason> = 'unknown';
+		let finishReason: ReturnType<typeof mapLmstudioFinishReason> = {
+			unified: 'other',
+			raw: undefined,
+		};
 		let usage = mapLmstudioUsage(undefined);
 		let emittedStreamStart = false;
 		let textId: string | undefined;
@@ -170,7 +170,7 @@ export class LmstudioChatLanguageModel implements LanguageModelV2 {
 		type ChunkType = z.infer<typeof lmstudioChatChunkSchema>;
 
 		const stream = response.pipeThrough(
-			new TransformStream<ParseResult<ChunkType>, LanguageModelV2StreamPart>({
+			new TransformStream<ParseResult<ChunkType>, LanguageModelV3StreamPart>({
 				transform(result, controller) {
 					if (!result.success) return;
 

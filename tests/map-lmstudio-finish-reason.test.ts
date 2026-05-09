@@ -2,31 +2,52 @@ import { describe, expect, it } from 'vitest';
 import { mapLmstudioFinishReason } from '../src/map-lmstudio-finish-reason.js';
 
 describe('mapLmstudioFinishReason', () => {
-	it('maps "stop" to "stop"', () => {
-		expect(mapLmstudioFinishReason('stop')).toBe('stop');
+	it('maps "stop"', () => {
+		expect(mapLmstudioFinishReason('stop')).toEqual({
+			unified: 'stop',
+			raw: 'stop',
+		});
 	});
 
-	it('maps "length" to "length"', () => {
-		expect(mapLmstudioFinishReason('length')).toBe('length');
+	it('maps "length"', () => {
+		expect(mapLmstudioFinishReason('length')).toEqual({
+			unified: 'length',
+			raw: 'length',
+		});
 	});
 
-	it('maps "tool_calls" to "tool-calls"', () => {
-		expect(mapLmstudioFinishReason('tool_calls')).toBe('tool-calls');
+	it('maps "tool_calls"', () => {
+		expect(mapLmstudioFinishReason('tool_calls')).toEqual({
+			unified: 'tool-calls',
+			raw: 'tool_calls',
+		});
 	});
 
-	it('maps "content_filter" to "content-filter"', () => {
-		expect(mapLmstudioFinishReason('content_filter')).toBe('content-filter');
+	it('maps "content_filter"', () => {
+		expect(mapLmstudioFinishReason('content_filter')).toEqual({
+			unified: 'content-filter',
+			raw: 'content_filter',
+		});
 	});
 
-	it('maps null to "unknown"', () => {
-		expect(mapLmstudioFinishReason(null)).toBe('unknown');
+	it('maps null to other with undefined raw', () => {
+		expect(mapLmstudioFinishReason(null)).toEqual({
+			unified: 'other',
+			raw: undefined,
+		});
 	});
 
-	it('maps undefined to "unknown"', () => {
-		expect(mapLmstudioFinishReason(undefined)).toBe('unknown');
+	it('maps undefined to other with undefined raw', () => {
+		expect(mapLmstudioFinishReason(undefined)).toEqual({
+			unified: 'other',
+			raw: undefined,
+		});
 	});
 
-	it('maps unknown strings to "unknown"', () => {
-		expect(mapLmstudioFinishReason('something_else')).toBe('unknown');
+	it('maps unknown strings to other', () => {
+		expect(mapLmstudioFinishReason('something_else')).toEqual({
+			unified: 'other',
+			raw: 'something_else',
+		});
 	});
 });

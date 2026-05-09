@@ -65,9 +65,9 @@ describe('LmstudioChatLanguageModel', () => {
 				type: 'text',
 				text: 'Hello! How can I help you today?',
 			});
-			expect(result.finishReason).toBe('stop');
-			expect(result.usage.inputTokens).toBe(10);
-			expect(result.usage.outputTokens).toBe(8);
+			expect(result.finishReason).toEqual({ unified: 'stop', raw: 'stop' });
+			expect(result.usage.inputTokens.total).toBe(10);
+			expect(result.usage.outputTokens.total).toBe(8);
 		});
 
 		it('sends correct request body', async () => {
@@ -123,7 +123,7 @@ describe('LmstudioChatLanguageModel', () => {
 				toolChoice: { type: 'auto' },
 			});
 
-			expect(result.finishReason).toBe('tool-calls');
+			expect(result.finishReason).toEqual({ unified: 'tool-calls', raw: 'tool_calls' });
 			const toolCall = result.content.find((c) => c.type === 'tool-call');
 			expect(toolCall).toEqual({
 				type: 'tool-call',
@@ -234,8 +234,11 @@ describe('LmstudioChatLanguageModel', () => {
 			const finish = parts.find((p) => p.type === 'finish');
 			expect(finish).toMatchObject({
 				type: 'finish',
-				finishReason: 'stop',
-				usage: { inputTokens: 5, outputTokens: 2, totalTokens: 7 },
+				finishReason: { unified: 'stop', raw: 'stop' },
+				usage: {
+					inputTokens: { total: 5 },
+					outputTokens: { total: 2 },
+				},
 			});
 		});
 

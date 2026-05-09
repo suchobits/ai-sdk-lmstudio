@@ -53,7 +53,7 @@ describe('LmstudioEmbeddingModel', () => {
 		const fetchMock = mockJsonResponse(embeddingResponse);
 		const model = createModel(fetchMock);
 
-		expect(model.specificationVersion).toBe('v2');
+		expect(model.specificationVersion).toBe('v3');
 		expect(model.provider).toBe('lmstudio');
 		expect(model.modelId).toBe('text-embedding-nomic-embed-text-v1.5');
 		expect(model.maxEmbeddingsPerCall).toBe(2048);

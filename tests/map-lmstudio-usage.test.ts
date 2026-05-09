@@ -10,25 +10,49 @@ describe('mapLmstudioUsage', () => {
 				total_tokens: 30,
 			}),
 		).toEqual({
-			inputTokens: 10,
-			outputTokens: 20,
-			totalTokens: 30,
+			inputTokens: {
+				total: 10,
+				noCache: undefined,
+				cacheRead: undefined,
+				cacheWrite: undefined,
+			},
+			outputTokens: {
+				total: 20,
+				text: undefined,
+				reasoning: undefined,
+			},
 		});
 	});
 
 	it('defaults to undefined when fields are missing', () => {
 		expect(mapLmstudioUsage({})).toEqual({
-			inputTokens: undefined,
-			outputTokens: undefined,
-			totalTokens: undefined,
+			inputTokens: {
+				total: undefined,
+				noCache: undefined,
+				cacheRead: undefined,
+				cacheWrite: undefined,
+			},
+			outputTokens: {
+				total: undefined,
+				text: undefined,
+				reasoning: undefined,
+			},
 		});
 	});
 
 	it('defaults to undefined when usage is undefined', () => {
 		expect(mapLmstudioUsage(undefined)).toEqual({
-			inputTokens: undefined,
-			outputTokens: undefined,
-			totalTokens: undefined,
+			inputTokens: {
+				total: undefined,
+				noCache: undefined,
+				cacheRead: undefined,
+				cacheWrite: undefined,
+			},
+			outputTokens: {
+				total: undefined,
+				text: undefined,
+				reasoning: undefined,
+			},
 		});
 	});
 });

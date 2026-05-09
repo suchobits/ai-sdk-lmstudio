@@ -1,4 +1,4 @@
-import type { ProviderV2 } from '@ai-sdk/provider';
+import type { ProviderV3 } from '@ai-sdk/provider';
 import { withoutTrailingSlash } from '@ai-sdk/provider-utils';
 import { LmstudioChatLanguageModel } from './lmstudio-chat-language-model.js';
 import type {
@@ -7,20 +7,13 @@ import type {
 } from './lmstudio-chat-settings.js';
 import { LmstudioEmbeddingModel } from './lmstudio-embedding-model.js';
 
-export interface LmstudioProvider extends ProviderV2 {
+export interface LmstudioProvider extends ProviderV3 {
 	(modelId: string, settings?: LmstudioChatSettings): LmstudioChatLanguageModel;
 
 	chat(
 		modelId: string,
 		settings?: LmstudioChatSettings,
 	): LmstudioChatLanguageModel;
-
-	languageModel(
-		modelId: string,
-		settings?: LmstudioChatSettings,
-	): LmstudioChatLanguageModel;
-
-	textEmbeddingModel(modelId: string): LmstudioEmbeddingModel;
 }
 
 export function createLmstudio(
@@ -48,21 +41,28 @@ export function createLmstudio(
 	const createEmbeddingModel = (modelId: string) =>
 		new LmstudioEmbeddingModel(modelId, config);
 
-	const provider = function (modelId: string, settings?: LmstudioChatSettings) {
+	const providerFn = function (
+		modelId: string,
+		settings?: LmstudioChatSettings,
+	) {
 		if (new.target) {
 			throw new Error(
 				'The LM Studio provider cannot be called with the new keyword.',
 			);
 		}
 		return createChatModel(modelId, settings);
-	} as LmstudioProvider;
-
-	provider.languageModel = createChatModel;
-	provider.chat = createChatModel;
-	provider.textEmbeddingModel = createEmbeddingModel;
-	provider.imageModel = () => {
-		throw new Error('LM Studio does not support image models.');
 	};
+
+	const provider: LmstudioProvider = Object.assign(providerFn, {
+		specificationVersion: 'v3' as const,
+		languageModel: createChatModel,
+		chat: createChatModel,
+		embeddingModel: createEmbeddingModel,
+		textEmbeddingModel: createEmbeddingModel,
+		imageModel: () => {
+			throw new Error('LM Studio does not support image models.');
+		},
+	});
 
 	return provider;
 }
