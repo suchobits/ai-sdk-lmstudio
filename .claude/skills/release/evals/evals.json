@@ -1,0 +1,23 @@
+{
+  "skill_name": "release",
+  "should_trigger": [
+    {"id": "st1", "prompt": "/release"},
+    {"id": "st2", "prompt": "let's do a release"},
+    {"id": "st3", "prompt": "publish this to npm"},
+    {"id": "st4", "prompt": "I'd like to cut a new version of the package"},
+    {"id": "st5", "prompt": "bump the version, run checks, and prepare for publish"},
+    {"id": "st6", "prompt": "we need to create a changeset and get this shipped"},
+    {"id": "st7", "prompt": "time to ship a new version to npm"},
+    {"id": "st8", "prompt": "ok the bug fix is merged, now prepare the release"}
+  ],
+  "should_not_trigger": [
+    {"id": "sn1", "prompt": "what version of the package is currently published?"},
+    {"id": "sn2", "prompt": "fix the streaming token tracking bug"},
+    {"id": "sn3", "prompt": "run the tests"},
+    {"id": "sn4", "prompt": "update the README with a new example"},
+    {"id": "sn5", "prompt": "check if the release workflow CI passed"},
+    {"id": "sn6", "prompt": "add a new feature to the provider"},
+    {"id": "sn7", "prompt": "review the open dependabot PRs"},
+    {"id": "sn8", "prompt": "install ai-sdk-lmstudio in my other project"}
+  ]
+}
