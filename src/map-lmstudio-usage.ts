@@ -1,4 +1,4 @@
-import type { LanguageModelV2Usage } from '@ai-sdk/provider';
+import type { LanguageModelV3Usage } from '@ai-sdk/provider';
 
 export function mapLmstudioUsage(
 	usage?: {
@@ -6,10 +6,18 @@ export function mapLmstudioUsage(
 		completion_tokens?: number;
 		total_tokens?: number;
 	} | null,
-): LanguageModelV2Usage {
+): LanguageModelV3Usage {
 	return {
-		inputTokens: usage?.prompt_tokens ?? undefined,
-		outputTokens: usage?.completion_tokens ?? undefined,
-		totalTokens: usage?.total_tokens ?? undefined,
+		inputTokens: {
+			total: usage?.prompt_tokens ?? undefined,
+			noCache: undefined,
+			cacheRead: undefined,
+			cacheWrite: undefined,
+		},
+		outputTokens: {
+			total: usage?.completion_tokens ?? undefined,
+			text: undefined,
+			reasoning: undefined,
+		},
 	};
 }

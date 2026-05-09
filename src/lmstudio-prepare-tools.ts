@@ -1,6 +1,6 @@
 import type {
-	LanguageModelV2CallOptions,
-	LanguageModelV2FunctionTool,
+	LanguageModelV3CallOptions,
+	LanguageModelV3FunctionTool,
 } from '@ai-sdk/provider';
 
 type PrepareWarning = { type: 'other'; message: string };
@@ -21,8 +21,8 @@ type LmstudioToolChoice =
 	| { type: 'function'; function: { name: string } };
 
 export function prepareTools(
-	tools: LanguageModelV2CallOptions['tools'],
-	toolChoice: LanguageModelV2CallOptions['toolChoice'],
+	tools: LanguageModelV3CallOptions['tools'],
+	toolChoice: LanguageModelV3CallOptions['toolChoice'],
 ): {
 	tools: LmstudioTool[] | undefined;
 	tool_choice: LmstudioToolChoice | undefined;
@@ -31,7 +31,7 @@ export function prepareTools(
 	const warnings: PrepareWarning[] = [];
 
 	const mappedTools = tools
-		?.filter((tool): tool is LanguageModelV2FunctionTool => {
+		?.filter((tool): tool is LanguageModelV3FunctionTool => {
 			if (tool.type === 'function') return true;
 			warnings.push({
 				type: 'other',
@@ -60,7 +60,7 @@ export function prepareTools(
 }
 
 function mapToolChoice(
-	toolChoice: NonNullable<LanguageModelV2CallOptions['toolChoice']>,
+	toolChoice: NonNullable<LanguageModelV3CallOptions['toolChoice']>,
 ): LmstudioToolChoice {
 	switch (toolChoice.type) {
 		case 'auto':

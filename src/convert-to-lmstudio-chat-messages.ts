@@ -1,4 +1,4 @@
-import type { LanguageModelV2Prompt } from '@ai-sdk/provider';
+import type { LanguageModelV3Prompt } from '@ai-sdk/provider';
 
 type LmstudioMessage =
 	| { role: 'system'; content: string }
@@ -28,7 +28,7 @@ export type ConversionWarning = {
 	message: string;
 };
 
-export function convertToLmstudioChatMessages(prompt: LanguageModelV2Prompt): {
+export function convertToLmstudioChatMessages(prompt: LanguageModelV3Prompt): {
 	messages: LmstudioMessage[];
 	warnings: ConversionWarning[];
 } {
@@ -143,6 +143,7 @@ export function convertToLmstudioChatMessages(prompt: LanguageModelV2Prompt): {
 
 			case 'tool': {
 				for (const part of message.content) {
+					if (part.type !== 'tool-result') continue;
 					messages.push({
 						role: 'tool',
 						tool_call_id: part.toolCallId,

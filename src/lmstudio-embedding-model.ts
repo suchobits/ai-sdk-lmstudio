@@ -1,4 +1,7 @@
-import type { EmbeddingModelV2 } from '@ai-sdk/provider';
+import type {
+	EmbeddingModelV3,
+	EmbeddingModelV3CallOptions,
+} from '@ai-sdk/provider';
 import {
 	createJsonResponseHandler,
 	postJsonToApi,
@@ -7,8 +10,8 @@ import { z } from 'zod';
 import type { LmstudioConfig } from './lmstudio-chat-settings.js';
 import { lmstudioFailedResponseHandler } from './lmstudio-error.js';
 
-export class LmstudioEmbeddingModel implements EmbeddingModelV2<string> {
-	readonly specificationVersion = 'v2' as const;
+export class LmstudioEmbeddingModel implements EmbeddingModelV3 {
+	readonly specificationVersion = 'v3' as const;
 	readonly provider: string;
 	readonly modelId: string;
 	readonly maxEmbeddingsPerCall = 2048;
@@ -22,11 +25,7 @@ export class LmstudioEmbeddingModel implements EmbeddingModelV2<string> {
 		this.modelId = modelId;
 	}
 
-	async doEmbed(options: {
-		values: string[];
-		abortSignal?: AbortSignal;
-		headers?: Record<string, string | undefined>;
-	}) {
+	async doEmbed(options: EmbeddingModelV3CallOptions) {
 		const { value: response } = await postJsonToApi({
 			url: `${this.config.baseURL}/embeddings`,
 			headers: this.config.headers(),
