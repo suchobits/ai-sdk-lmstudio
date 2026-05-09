@@ -29,6 +29,7 @@
     "check": "biome check --write src/ tests/",
     "changeset": "changeset",
     "version": "changeset version",
+    "quality": "pnpm lint && pnpm typecheck && pnpm test",
     "release": "pnpm build && changeset publish"
   },
   "dependencies": {
