@@ -1,6 +1,6 @@
 {
   "name": "ai-sdk-lmstudio",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "LM Studio provider for Vercel AI SDK with streaming token tracking",
   "license": "MIT",
   "type": "module",
