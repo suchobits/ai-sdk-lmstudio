@@ -36,6 +36,22 @@
     "@ai-sdk/provider": "^3.0.10",
     "@ai-sdk/provider-utils": "^4.0.27"
   },
+  "peerDependencies": {
+    "@ai-sdk/provider": "^3.0.10",
+    "@ai-sdk/provider-utils": "^4.0.27",
+    "zod": "^3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@ai-sdk/provider": {
+      "optional": false
+    },
+    "@ai-sdk/provider-utils": {
+      "optional": false
+    },
+    "zod": {
+      "optional": true
+    }
+  },
   "devDependencies": {
     "@biomejs/biome": "^2.4.14",
     "@changesets/changelog-github": "^0.7.0",
@@ -46,14 +62,6 @@
     "typescript": "^5.7.0",
     "vitest": "^4.1.5",
     "zod": "^3.24.0"
-  },
-  "peerDependencies": {
-    "zod": "^3.0.0"
-  },
-  "peerDependenciesMeta": {
-    "zod": {
-      "optional": true
-    }
   },
   "packageManager": "pnpm@11.0.4",
   "engines": {
