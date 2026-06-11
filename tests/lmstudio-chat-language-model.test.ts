@@ -167,6 +167,43 @@ describe('LmstudioChatLanguageModel', () => {
 			const body = JSON.parse(fetchMock.mock.calls[0][1].body as string);
 			expect(body.response_format).toEqual({ type: 'json_object' });
 		});
+
+		it('sends json_schema response_format for schema mode', async () => {
+			const fetchMock = mockJsonResponse(chatResponse);
+			const model = createModel(fetchMock);
+			const schema = {
+				type: 'object',
+				properties: {
+					answer: { type: 'string' },
+				},
+				required: ['answer'],
+			};
+
+			await model.doGenerate({
+				prompt: [
+					{
+						role: 'user',
+						content: [{ type: 'text', text: 'Return JSON' }],
+					},
+				],
+				responseFormat: {
+					type: 'json',
+					schema,
+					name: 'answer_response',
+					description: 'A concise answer object',
+				},
+			});
+
+			const body = JSON.parse(fetchMock.mock.calls[0][1].body as string);
+			expect(body.response_format).toEqual({
+				type: 'json_schema',
+				json_schema: {
+					name: 'answer_response',
+					description: 'A concise answer object',
+					schema,
+				},
+			});
+		});
 	});
 
 	describe('doStream', () => {

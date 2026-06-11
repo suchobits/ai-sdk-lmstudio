@@ -66,7 +66,14 @@ export class LmstudioChatLanguageModel implements LanguageModelV3 {
 			...(responseFormat?.type === 'json'
 				? {
 						response_format: responseFormat.schema
-							? { type: 'json_schema', schema: responseFormat.schema }
+							? {
+									type: 'json_schema',
+									json_schema: {
+										name: responseFormat.name ?? 'response',
+										description: responseFormat.description,
+										schema: responseFormat.schema,
+									},
+								}
 							: { type: 'json_object' },
 					}
 				: {}),
